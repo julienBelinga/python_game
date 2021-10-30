@@ -1,21 +1,34 @@
+import time
+
 import pygame
 
 
 class AnimateSprite(pygame.sprite.Sprite):
 
-    def __init__(self, sprite_name):
+    def __init__(self, sprite_name, size=(200, 200)):
         super().__init__()
+        self.size = size
         self.image = pygame.image.load(f'assets/{sprite_name}.png')
         self.current_image = 0
         self.images = animations.get(sprite_name)
+        self.animation = False
 
-    def animate(self):
-        self.current_image += 1
+    def start_animation(self):
+        self.animation = True
 
-        if self.current_image >= len(self.images):
-            self.current_image = 0
+    def animate(self, loop=False):
+        if self.animation:
+            self.current_image += 1
+            time.sleep(0.003)
 
-        self.images = self.images[self.current_image]
+            if self.current_image >= len(self.images):
+                self.current_image = 0
+
+                if loop is False:
+                    self.animation = False
+
+            self.image = self.images[self.current_image]
+            self.image = pygame.transform.scale(self.image, self.size)
 
 
 def load_animation_images(sprite_name):
@@ -30,5 +43,7 @@ def load_animation_images(sprite_name):
 
 
 animations = {
-    'mummy': load_animation_images('mummy')
+    'mummy': load_animation_images('mummy'),
+    'alien': load_animation_images('alien'),
+    'player': load_animation_images('player')
 }

@@ -1,10 +1,12 @@
 import pygame
 from projetile import Projectile
+import animation
 
-class Player(pygame.sprite.Sprite):
+
+class Player(animation.AnimateSprite):
 
     def __init__(self, game):
-        super().__init__()
+        super().__init__('player')
         self.game = game
         self.health = 100
         self.max_health = 100
@@ -22,8 +24,13 @@ class Player(pygame.sprite.Sprite):
         else:
             self.game.game_over()
 
+    def update_animation(self):
+        self.animate()
+
     def launch_projectile(self):
-            self.all_projectiles.add(Projectile(self))
+        self.all_projectiles.add(Projectile(self))
+        self.start_animation()
+        self.game.sound_manager.play('tir')
 
     def move_right(self):
         if not self.game.check_collision(self, self.game.all_monsters):

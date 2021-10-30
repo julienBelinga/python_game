@@ -1,7 +1,9 @@
 from player import Player
-from monster import Monster
+from monster import Monster, Mummy, Alien
 from comet_event import CometFallEvent
 import pygame
+from sounds import SoundManager
+
 
 class Game:
     def __init__(self):
@@ -12,24 +14,37 @@ class Game:
         self.pressed = {}
         self.all_monsters = pygame.sprite.Group()
         self.comet_event = CometFallEvent(self)
+        self.score = 0
+        self.font = pygame.font.Font('assets/font/PottaOne-Regular.ttf', 25)
+        self.sound_manager = SoundManager()
 
     def start(self):
         self.is_playing = True
-        self.spawn_monster()
-        self.spawn_monster()
+        self.spawn_monster(Mummy)
+        self.spawn_monster(Mummy)
+        self.spawn_monster(Alien)
+
+    def add_score(self, point=1):
+        self.score += point
 
     def game_over(self):
-        #remove monsters
+        # remove monsters
         self.all_monsters = pygame.sprite.Group()
         self.comet_event.all_comets = pygame.sprite.Group()
         self.comet_event.reset_percent()
         self.player.health = self.player.max_health
         self.is_playing = False
+        self.score = 0
+        self.sound_manager.play('game_over')
 
     def update(self, screen):
+        score_text = self.font.render(f"Score : {self.score}", 1, (0, 0, 0))
+        screen.blit(score_text, (20, 20))
+
         screen.blit(self.player.image, self.player.rect)
 
         self.player.update_health_bar(screen)
+        self.player.update_animation()
         self.comet_event.update_bar(screen)
 
         # récupération
@@ -53,10 +68,8 @@ class Game:
         elif self.pressed.get(pygame.K_LEFT) and self.player.rect.x > 0:
             self.player.move_left()
 
-
-    def spawn_monster(self):
-        monster = Monster(self)
-        self.all_monsters.add(monster)
+    def spawn_monster(self, monster_class_name):
+        self.all_monsters.add(monster_class_name.__call__(self))
 
     def check_collision(self, sprite, group):
         return pygame.sprite.spritecollide(sprite, group, False, pygame.sprite.collide_mask)

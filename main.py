@@ -4,6 +4,10 @@ from game import Game
 
 pygame.init()
 
+#défininr clock
+clock = pygame.time.Clock()
+FPS = 120
+
 # générer la fênetre du jeu
 pygame.display.set_caption("Comet fall game")
 
@@ -46,7 +50,11 @@ while running:
             game.pressed[event.key] = True
 
             if event.key == pygame.K_SPACE:
-                game.player.launch_projectile()
+                if game.is_playing:
+                    game.player.launch_projectile()
+                else:
+                    game.start()
+                    game.sound_manager.play('click')
 
         elif event.type == pygame.KEYUP:
             game.pressed[event.key] = False
@@ -54,3 +62,6 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if play_button_rect.collidepoint(event.pos):
                 game.start()
+                game.sound_manager.play('click')
+
+    clock.tick(FPS)
