@@ -1,9 +1,8 @@
-from player import Player
-from monster import Monster, Mummy, Alien
+from Player import Player
+from Monster import Monster, Mummy, Alien
 from comet_event import CometFallEvent
 import pygame
 from sounds import SoundManager
-
 
 class Game:
     def __init__(self):
