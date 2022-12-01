@@ -1,4 +1,3 @@
-https://img.shields.io/github/gist/last-commit/422747127
 # Python_game
 
 ## Contexte
